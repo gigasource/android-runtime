@@ -285,4 +285,4 @@ void SendMessageToNodeChannel(const char* channelName, const char* message) {
     channel->queueMessage(messageCopy);
 }
 
-NAPI_MODULE_X(test_bridge, Init, NULL, NM_F_BUILTIN);
+NAPI_MODULE_X(node_bridge, Init, NULL, NM_F_BUILTIN);
