@@ -29,9 +29,6 @@ var MyActivity = (function (_super) {
 	MyActivity.prototype.onCreate = function (bundle) {
 		_super.prototype.onCreate.call(this, bundle);
 
-		require("./tests/testsWithContext").run(this);
-		execute(); //run jasmine
-
 		var layout = new android.widget.LinearLayout(this);
 		layout.setOrientation(1);
 		this.setContentView(layout);
@@ -48,8 +45,6 @@ var MyActivity = (function (_super) {
 		var Color = android.graphics.Color;
 		var colors = [Color.BLUE, Color.RED, Color.MAGENTA, Color.YELLOW, Color.parseColor("#FF7F50")];
 		var taps = 0;
-
-		var dum = com.tns.tests.DummyClass.null;
 
 		button.setOnClickListener(new android.view.View.OnClickListener("AppClickListener", {
 			onClick:  function() {
