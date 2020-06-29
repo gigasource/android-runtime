@@ -113,7 +113,7 @@ version of the {N} CLI install a previous version of the runtime package - 'tns 
         project.ext.extractAllJarsTimestamp = "${project.buildDir}/extractAllJars.timestamp"
         project.ext.nativescriptDependencies = new JsonSlurper().parseText(dependenciesJson.text)
         project.ext.PLATFORMS_ANDROID = "platforms/android"
-        project.ext.USER_PROJECT_ROOT = "$rootDir/../.."
+        project.ext.USER_PROJECT_ROOT = "$rootDir"
         project.ext.outLogger = services.get(StyledTextOutputFactory).create("colouredOutputLogger")
 
         project.ext.getAppPath = { ->
@@ -148,7 +148,7 @@ version of the {N} CLI install a previous version of the runtime package - 'tns 
                 relativePathToAppResources = nsConfig.appResourcesPath
                 absolutePathToAppResources = java.nio.file.Paths.get(USER_PROJECT_ROOT).resolve(relativePathToAppResources).toAbsolutePath()
             } else {
-                absolutePathToAppResources = "${getAppPath()}/App_Resources"
+                absolutePathToAppResources = "${getAppPath()}"
             }
 
             project.ext.appResourcesPath = absolutePathToAppResources
@@ -255,7 +255,8 @@ android {
 
     defaultConfig {
         def manifest = new XmlSlurper().parse(file(android.sourceSets.main.manifest.srcFile))
-        def minSdkVer = manifest."uses-sdk"."@android:minSdkVersion".text() ?: 17
+        def minSdkVer = manifest."uses-sdk"."@android:minSdkVersion".text() ?: 21
+        multiDexEnabled true
         minSdkVersion minSdkVer
         targetSdkVersion computeTargetSdkVersion()
         ndk {
@@ -296,6 +297,11 @@ android {
         main {
             jniLibs.srcDirs 'libnode/bin/'
         }
+    }
+
+    aaptOptions {
+        noCompress 'pak', 'dat', 'bin'
+        additionalParameters "--extra-packages", "com.gigasource.webview3:org.chromium.content_shell_apk:org.chromium.ui:org.chromium.content_shell:org.chromium.content:org.chromium.media"
     }
 
     signingConfigs {
@@ -346,6 +352,13 @@ android {
       }
     }
 
+    packagingOptions {
+        exclude("META-INF/*.version")
+        exclude("play-services-base.properties")
+        exclude("play-services-tasks.properties")
+        exclude("play-services-basement.properties")
+    }
+
     initializeMergedAssetsOutputPath()
 }
 
@@ -368,7 +381,7 @@ repositories {
     }
 
     def appResourcesPath = getAppResourcesPath()
-    def localAppResourcesLibraries = "$appResourcesPath/Android/libs"
+    def localAppResourcesLibraries = "$appResourcesPath/libs"
 
     pluginDependencies.add(localAppResourcesLibraries)
 
@@ -397,7 +410,8 @@ dependencies {
     }
 
     outLogger.withStyle(Style.SuccessHeader).println "\t + using android X library androidx.legacy:legacy-support-v4:$androidXLegacyVersion"
-
+    implementation(name: 'ContentShell', ext: 'aar')
+    implementation(name: 'ContentShellWebView', ext: 'aar')
     implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.legacy:legacy-support-v4:$androidXLegacyVersion"
     implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"

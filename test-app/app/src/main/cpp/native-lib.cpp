@@ -49,14 +49,14 @@ void rcv_message_from_node(const char* channel_name, const char* msg) {
     jclass cls2 = env->FindClass("io/gigasource/nodebridge/Listener");
     if (cls2 != nullptr) {
         // Find the method
-        jmethodID m_sendMessage = env->GetStaticMethodID(cls2,
-                                                         "sendMessageToApplication",
+        jmethodID m_reiceveMessage = env->GetStaticMethodID(cls2,
+                                                         "receiveMessageFromNode",
                                                          "(Ljava/lang/String;Ljava/lang/String;)V");
-        if (m_sendMessage != nullptr) {
+        if (m_reiceveMessage != nullptr) {
             jstring java_channel_name=env->NewStringUTF(channel_name);
             jstring java_msg=env->NewStringUTF(msg);
             // Call the method.
-            env->CallStaticVoidMethod(cls2, m_sendMessage, java_channel_name, java_msg);
+            env->CallStaticVoidMethod(cls2, m_reiceveMessage, java_channel_name, java_msg);
             env->DeleteLocalRef(java_channel_name);
             env->DeleteLocalRef(java_msg);
         }

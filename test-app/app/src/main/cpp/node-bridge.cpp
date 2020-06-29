@@ -102,7 +102,6 @@ public:
         this->queueMutex.unlock();
 
         if (initialized) {
-            puts("12");
             uv_async_send(this->queue_uv_handle);
         }
     };

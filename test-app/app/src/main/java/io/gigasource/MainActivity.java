@@ -4,14 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.gigasource.webview3.content_shell_apk.ContentShellWebView;
 import com.tns.NativeScriptActivity;
 
 import java.io.File;
@@ -20,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class MainActivity extends AppCompatActivity {
+import io.gigasource.nodebridge.Listener;
+
+public class MainActivity extends Activity {
     final int uiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -41,23 +46,29 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("node");
     }
 
+    public ContentShellWebView mainWebView;
+    public ImageView logo;
+
     public static boolean _startedNodeAlready=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
         super.onCreate(savedInstanceState);
+        Listener.setActivity(this);
         setContentView(R.layout.activity_main);
-
+        mainWebView = findViewById(R.id.webView);
+        mainWebView.setVisibility(View.INVISIBLE);
+        logo = findViewById(R.id.logo);
         nodeDir = getApplicationContext().getApplicationInfo().dataDir + "/nodejs-project";
         copyAssetFolder(getApplicationContext().getAssets(), "nodejs-project", nodeDir);
-        if (!(new File("/sdcard/data")).exists()) {
-            (new File("/sdcard/data")).mkdir();
+        if (!(new File(getApplicationContext().getApplicationInfo().dataDir + "files")).exists()) {
+            Log.d("Creating", "Creating");
+            (new File(getApplicationContext().getApplicationInfo().dataDir + "files")).mkdir();
         }
         if (askForPermission()) {
             startNode();
         }
-
         if (nsRuntime == null) {
             nsRuntime = com.tns.RuntimeHelper.initRuntime(MainActivity.this.getApplication());
             if (nsRuntime != null) {
@@ -67,10 +78,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
-
-        android.content.Intent intent = new android.content.Intent(MainActivity.this, NativeScriptActivity.class);
-        intent.setAction(android.content.Intent.ACTION_DEFAULT);
-        startActivity(intent);
     }
 
     private void startNode() {
