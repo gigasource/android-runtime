@@ -72,7 +72,6 @@ public class MainActivity extends Activity {
         if (nsRuntime == null) {
             nsRuntime = com.tns.RuntimeHelper.initRuntime(MainActivity.this.getApplication());
             if (nsRuntime != null) {
-
                 nsRuntime.run();
             } else {
                 return;

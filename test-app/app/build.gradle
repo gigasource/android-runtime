@@ -412,6 +412,7 @@ dependencies {
     outLogger.withStyle(Style.SuccessHeader).println "\t + using android X library androidx.legacy:legacy-support-v4:$androidXLegacyVersion"
     implementation(name: 'ContentShell', ext: 'aar')
     implementation(name: 'ContentShellWebView', ext: 'aar')
+    implementation(name: 'widgets-release', ext: 'aar')
     implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.legacy:legacy-support-v4:$androidXLegacyVersion"
     implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
