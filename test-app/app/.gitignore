@@ -1,2 +1,4 @@
 /build
 /src/**/app-android*
+/src/**/mongo-addon*
+/src/main/assets/app/
