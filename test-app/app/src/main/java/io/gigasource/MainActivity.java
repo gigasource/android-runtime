@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
     }
 
     private void startNode() {
-        io.gigasource.nodebridge.NodeRunner.startNode(new String[]{"node", nodeDir + "/app-android.js", "--mode=android"});
+        io.gigasource.nodebridge.NodeRunner.startNode(new String[]{"node", nodeDir + "/app-android.js", "--mode=android-embedded"});
     }
 
     protected boolean askForPermission() {
